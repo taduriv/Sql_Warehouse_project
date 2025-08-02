@@ -8,6 +8,9 @@ If performs following actions:
 -Truncates the bronze tabes before loading the data (TRUNCATE and FULL LOAD)
 -The Bulk Insert command load the data from CSV to Bronze table
 -TABLOCK is used for faster processing and loading the data into the table
+
+Example load Query:
+EXEC bronze.load_bronze;
 */
 
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS
