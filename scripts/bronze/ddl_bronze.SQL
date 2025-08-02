@@ -1,3 +1,16 @@
+/*
+=======================================================================
+DDL Script: Create Bronze Table
+Script:
+The Script Load the tables in the Bronze schema, dropping the existing tables 
+If the already exist.
+Following is  the Stored procedure
+=======================================================================
+
+
+*/
+
+
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
 Declare @start_time DATETIME,@end_time DATETIME, @batch_start_time DATETIME,@batch_end_time DATETIME;
