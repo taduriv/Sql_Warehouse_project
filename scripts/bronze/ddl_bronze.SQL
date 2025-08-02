@@ -4,98 +4,71 @@ DDL Script: Create Bronze Table
 Script:
 The Script Load the tables in the Bronze schema, dropping the existing tables 
 If the already exist.
-Following is  the Stored procedure
 =======================================================================
 
 
 */
+IF OBJECT_ID('bronze.crm_cust_info','U') IS NOT NULL
+	DROP TABLE bronze.crm_cust_info;
+CREATE Table bronze.crm_cust_info(
+cst_Id INT,
+cst_Key NVARCHAR(50),
+cst_firstname NVARCHAR(50),
+cst_lastname NVARCHAR(50),
+cst_marital_status NVARCHAR(50),
+cst_gndr NVARCHAR(50),
+cst_create_date NVARCHAR(50)
+);
 
+IF OBJECT_ID('bronze.crm_prd_id','U') IS NOT NULL
+	DROP TABLE bronze.crm_prd_id;
+CREATE TABLE bronze.crm_prd_id
+(
+prd_id INT,
+prd_key NVARCHAR(50),
+prd_nm NVARCHAR(50),
+prd_cost INT,
+prd_line NVARCHAR(50),
+prd_start_dt DATETIME,
+prd_end_dt DATETIME
+);
 
-CREATE OR ALTER PROCEDURE bronze.load_bronze AS
-BEGIN
-Declare @start_time DATETIME,@end_time DATETIME, @batch_start_time DATETIME,@batch_end_time DATETIME;
-	BEGIN TRY
-			SET @batch_start_time=GETDATE();
-			PRINT'=================================='
-			PRINT 'Loading the Bronze layer'
-			PRINT'=================================='
-			PRINT '---------------------------------'
-			PRINT'LOADING CRM TABLES'
-			PRINT '---------------------------------'
-			SET @start_time=GETDATE();
-			TRUNCATE TABLE bronze.crm_cust_info;
-			BULK INSERT bronze.crm_cust_info
-			FROM 'C:\Users\Vishal Taduri\OneDrive\Desktop\DataWarehouseProject\source_crm\cust_info.csv'
-			WITH (
-				FIRSTROW=2,
-				FIELDTERMINATOR=',',
-				TABLOCK
-			);
-			SET @end_time=GETDATE();
-			PRINT '>> LOAD DURATION :'+CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR)+'Seconds';
+IF OBJECT_ID('bronze.crm_sales_details','U') IS NOT NULL
+	DROP TABLE bronze.crm_sales_details;
 
-			PRINT '>> TRUNCATING TABLE crm_prd_id'
-			TRUNCATE TABLE bronze.crm_prd_id;
-			BULK INSERT bronze.crm_prd_id
-			FROM 'C:\Users\Vishal Taduri\OneDrive\Desktop\DataWarehouseProject\source_crm\prd_info.csv'
-			WITH (
-				FIRSTROW=2,
-				FIELDTERMINATOR=',',
-				TABLOCK
-			);
+CREATE TABLE bronze.crm_sales_details
+(
+sls_ord_num NVARCHAR(50),
+sls_prd_key NVARCHAR(50),
+sls_cust_id INT,
+sls_order_dt INT,
+sls_ship_dt INT,
+sls_due_dt INT,
+sls_sales INT,
+sls_quantity INT,
+sls_price INT
+);
 
-			TRUNCATE TABLE bronze.crm_sales_details;
-			BULK INSERT bronze.crm_sales_details
-			FROM 'C:\Users\Vishal Taduri\OneDrive\Desktop\DataWarehouseProject\source_crm\sales_details.csv'
-			WITH (
-				FIRSTROW=2,
-				FIELDTERMINATOR=',',
-				TABLOCK
-			);
+IF OBJECT_ID('bronze.erp_loc_a101','U') IS NOT NULL
+	DROP TABLE bronze.erp_loc_a101;
+CREATE TABLE bronze.erp_loc_a101(
+Cid NVARCHAR(50),
+Cntry NVARCHAR(50)
+);
 
-			PRINT '---------------------------------'
-			PRINT 'LOADING ERP TABLES'
-			PRINT '---------------------------------'
-			TRUNCATE TABLE bronze.erp_loc_a101;
-			BULK INSERT bronze.erp_loc_a101
-			FROM 'C:\Users\Vishal Taduri\OneDrive\Desktop\DataWarehouseProject\source_erp\LOC_A101.csv'
-			WITH (
-				FIRSTROW=2,
-				FIELDTERMINATOR=',',
-				TABLOCK
-			);
+IF OBJECT_ID('bronze.erp_cust_az12','U')IS NOT NULL
+	DROP TABLE bronze.erp_cust_az12;
+CREATE TABLE bronze.erp_cust_az12(
+cid NVARCHAR(50),
+bdate DATE,
+gen NVARCHAR(50)
+);
 
-			TRUNCATE TABLE bronze.erp_cust_az12;
-			BULK INSERT bronze.erp_cust_az12
-			FROM 'C:\Users\Vishal Taduri\OneDrive\Desktop\DataWarehouseProject\source_erp\CUST_AZ12.csv'
-			WITH (
-				FIRSTROW=2,
-				FIELDTERMINATOR=',',
-				TABLOCK
-			);
-
-			TRUNCATE TABLE bronze.erp_px_cat_g1v2;
-			BULK INSERT bronze.erp_px_cat_g1v2
-			FROM 'C:\Users\Vishal Taduri\OneDrive\Desktop\DataWarehouseProject\source_erp\PX_CAT_G1V2.csv'
-			WITH (
-				FIRSTROW=2,
-				FIELDTERMINATOR=',',
-				TABLOCK
-			);
-			SET @batch_end_time=GETDATE();
-			PRINT'==========================================='
-			PRINT 'LOADING BRONZE LAYER IS COMPLETED'
-			PRINT 'TOTAL LOAD DURATION:'+CAST(DATEDIFF(second,@batch_start_time,@batch_end_time) AS NVARCHAR)+'Seconds'
-			PRINT'==========================================='
-
-		END TRY
-		BEGIN CATCH
-			PRINT '=================================================='
-			PRINT 'ERROR OCCURED DURING BRONZE LAYER'
-			PRINT '=================================================='
-			PRINT 'ERROR MESSAGE' + ERROR_MESSAGE();
-			PRINT 'ERROR MESSAGE' + CAST( ERROR_NUMBER() AS NVARCHAR);
-			PRINT 'ERROR MESSAGE' + CAST(ERROR_STATE() AS NVARCHAR)
-		END CATCH
-END
-
+IF OBJECT_ID('bronze.erp_px_cat_g1v2','U')IS NOT NULL
+	DROP TABLE bronze.erp_px_cat_g1v2;
+CREATE TABLE bronze.erp_px_cat_g1v2(
+id NVARCHAR(50),
+cat NVARCHAR(50),
+Subcat NVARCHAR(50),
+maintenance NVARCHAR(50)
+);
